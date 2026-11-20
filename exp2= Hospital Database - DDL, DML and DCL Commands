@@ -1,0 +1,40 @@
+CREATE DATABASE Hospital;
+USE Hospital;
+
+
+CREATE TABLE Patient (
+    Patient_ID    INT PRIMARY KEY,
+    Patient_Name  VARCHAR(50),
+    Age           INT,
+    Gender        VARCHAR(10),
+    Disease       VARCHAR(50),
+    Fees          DECIMAL(8,2)
+);
+
+
+INSERT INTO Patient VALUES
+(1, 'Amit Patil', 35, 'Male', 'Fever', 500.00),
+(2, 'Sneha Joshi', 28, 'Female', 'Typhoid', 1200.00),
+(3, 'Rahul Deshmukh', 45, 'Male', 'Diabetes', 2000.00),
+(4, 'Priya Kulkarni', 32, 'Female', 'Malaria', 1500.00),
+(5, 'Suresh More', 60, 'Male', 'Asthma', 1800.00);
+
+
+
+SELECT * FROM Patient;
+
+
+
+UPDATE Patient SET Fees = 700 WHERE Patient_ID = 1;
+SELECT * FROM Patient;
+
+
+DELETE FROM Patient WHERE Patient_ID = 5;
+SELECT * FROM Patient;
+
+
+ALTER TABLE Patient ADD Contact VARCHAR(15);
+SELECT * FROM Patient;
+
+
+
