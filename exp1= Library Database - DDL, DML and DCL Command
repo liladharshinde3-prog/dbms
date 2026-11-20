@@ -1,0 +1,54 @@
+CREATE DATABASE Library;
+USE Library;
+
+
+
+CREATE TABLE Books (
+    Book_ID    INT PRIMARY KEY,
+    Book_Name  VARCHAR(50),
+    Author     VARCHAR(50),
+    Price      DECIMAL(8,2),
+    Quantity   INT
+);
+DESC Books;
+
+
+
+INSERT INTO Books VALUES
+(101, 'Database Systems', 'Korth', 650.00, 10),
+(102, 'Let Us C', 'Yashwant Kanetkar', 450.00, 15),
+(103, 'Python Basics', 'Mark Lutz', 550.00, 8),
+(104, 'Java Complete', 'Herbert Schildt', 700.00, 12),
+(105, 'Data Structures', 'Seymour Lipschutz', 400.00, 20);
+
+
+
+
+SELECT * FROM Books;
+
+
+
+UPDATE Books SET Price = 500 WHERE Book_ID = 102;
+SELECT * FROM Books;
+
+
+
+
+DELETE FROM Books WHERE Book_ID = 105;
+SELECT * FROM Books;
+
+
+
+ALTER TABLE Books ADD Publisher VARCHAR(50);
+SELECT * FROM Books;
+
+
+
+SELECT Book_ID, Book_Name, Author, Price FROM Books WHERE Price > 500;
+
+
+
+CREATE USER 'student'@'localhost' IDENTIFIED BY 'Student@123';
+GRANT SELECT ON Library.Books TO 'student'@'localhost';
+SHOW GRANTS FOR 'student'@'localhost';
+REVOKE SELECT ON Library.Books FROM 'student'@'localhost';
