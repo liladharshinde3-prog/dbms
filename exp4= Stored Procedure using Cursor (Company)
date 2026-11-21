@@ -1,0 +1,54 @@
+CREATE DATABASE IF NOT EXISTS Company;
+USE Company;
+
+DROP TABLE IF EXISTS Employee;
+CREATE TABLE Employee (
+    Employee_ID    INT PRIMARY KEY,
+    Employee_Name  VARCHAR(50),
+    Department     VARCHAR(30),
+    Salary         INT
+);
+
+INSERT INTO Employee VALUES
+(1, 'Rahul', 'IT', 50000),
+(2, 'Priya', 'HR', 40000),
+(3, 'Amit', 'IT', 60000),
+(4, 'Sneha', 'Finance', 45000),
+(5, 'Vikas', 'HR', 35000);
+
+
+SELECT * FROM Employee;
+
+
+DELIMITER //
+CREATE PROCEDURE display_employees()
+BEGIN
+    DECLARE v_id      INT;
+    DECLARE v_name    VARCHAR(50);
+    DECLARE v_dept    VARCHAR(30);
+    DECLARE v_salary  INT;
+    DECLARE done      INT DEFAULT 0;
+
+    
+    -- 1. DECLARE the cursor
+    DECLARE emp_cursor CURSOR FOR
+        SELECT Employee_ID, Employee_Name, Department, Salary FROM Employee;
+
+        
+    -- when no more rows: set done = 1
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    DROP TEMPORARY TABLE IF EXISTS emp_temp;
+    CREATE TEMPORARY TABLE emp_temp (ID INT, Name VARCHAR(50), Dept VARCHAR(30), Salary INT);
+    OPEN emp_cursor;                          -- 2. OPEN
+    read_loop: LOOP
+        FETCH emp_cursor INTO v_id, v_name, v_dept, v_salary;   -- 3. FETCH
+        IF done = 1 THEN
+            LEAVE read_loop;
+        END IF;
+        INSERT INTO emp_temp VALUES (v_id, v_name, v_dept, v_salary);
+    END LOOP;
+    CLOSE emp_cursor;                         -- 4. CLOSE
+    SELECT * FROM emp_temp;
+    DROP TEMPORARY TABLE emp_temp;
+END //
+DELIMITER ;
