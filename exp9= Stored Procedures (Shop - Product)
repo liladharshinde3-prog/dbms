@@ -1,0 +1,61 @@
+CREATE DATABASE Shop;
+USE Shop;
+
+
+CREATE TABLE Product (
+    Product_ID    INT PRIMARY KEY,
+    Product_Name  VARCHAR(50),
+    Price         DECIMAL(8,2),
+    Quantity      INT
+);
+
+
+INSERT INTO Product VALUES
+(1, 'Laptop', 55000.00, 10),
+(2, 'Mouse', 500.00, 50),
+(3, 'Keyboard', 1200.00, 30),
+(4, 'Monitor', 8000.00, 15),
+(5, 'Printer', 6500.00, 8);
+
+
+-- Create the four stored procedures--
+
+DELIMITER //-- 1. Display all products
+CREATE PROCEDURE display_products()
+BEGIN
+    SELECT * FROM Product;
+END //-- 2. Insert a new product
+CREATE PROCEDURE insert_product(IN p_id INT, IN p_name VARCHAR(50),
+                                IN p_price DECIMAL(8,2), IN p_qty INT)
+BEGIN
+    INSERT INTO Product VALUES (p_id, p_name, p_price, p_qty);
+END //-- 3. Update price of a product
+CREATE PROCEDURE update_price(IN p_id INT, IN p_price DECIMAL(8,2))
+BEGIN
+    UPDATE Product SET Price = p_price WHERE Product_ID = p_id;
+END //-- 4. Delete a product
+CREATE PROCEDURE delete_product(IN p_id INT)
+BEGIN
+    DELETE FROM Product WHERE Product_ID = p_id;
+END //
+DELIMITER ;
+
+
+ --Display products--
+ CALL display_products();
+
+
+  --Insert a new product--
+  CALL insert_product(6, 'Webcam', 2500.00, 20);
+
+
+  -- Update the price of a product--
+  CALL update_price(2, 650.00);
+
+
+  --Delete a product record--
+  CALL delete_product(5);
+
+
+  -- Display the final table--
+  CALL display_products();
