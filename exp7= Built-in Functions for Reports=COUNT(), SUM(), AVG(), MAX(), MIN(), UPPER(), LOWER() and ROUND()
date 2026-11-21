@@ -1,0 +1,62 @@
+CREATE DATABASE IF NOT EXISTS Company;
+USE Company;
+
+
+DROP TABLE IF EXISTS Employee;
+CREATE TABLE Employee (
+    Employee_ID    INT PRIMARY KEY,
+    Employee_Name  VARCHAR(50),
+    Department     VARCHAR(30),
+    Salary         INT
+);
+
+
+INSERT INTO Employee VALUES
+(1, 'Rahul', 'IT', 50000),
+(2, 'Priya', 'HR', 40000),
+(3, 'Amit', 'IT', 60000),
+(4, 'Sneha', 'Finance', 45000),
+(5, 'Vikas', 'HR', 35000);
+
+
+
+SELECT * FROM Employee;
+
+
+--COUNT()--
+SELECT COUNT(*) AS Total_Employees FROM Employee;
+
+-- Total salary - SUM()--
+SELECT SUM(Salary) AS Total_Salary FROM Employee;
+
+-- Average salary - AVG() with ROUND()--
+SELECT ROUND(AVG(Salary), 2) AS Average_Salary FROM Employee;
+
+-- Maximum and minimum salary - MAX(), MIN()--
+SELECT MAX(Salary) AS Max_Salary, MIN(Salary) AS Min_Salary FROM Employee;
+
+--Employee names in uppercase and lowercase - UPPER(), LOWER()--
+SELECT UPPER(Employee_Name) AS Name_Upper,
+LOWER(Employee_Name) AS Name_Lower
+FROM Employee;
+
+
+-- Department-wise employee count - GROUP BY--
+SELECT Department, COUNT(*) AS Employee_Count
+FROM Employee
+GROUP BY Department
+ORDER BY Department;
+
+
+--Complete salary report (all functions together)--
+SELECT
+    Department,
+    COUNT(*) AS Total_Employees,
+    SUM(Salary) AS Total_Salary,
+    ROUND(AVG(Salary), 2) AS Average_Salary
+FROM Employee
+GROUP BY Department
+ORDER BY Department;
+
+
+
