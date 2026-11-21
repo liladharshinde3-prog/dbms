@@ -1,0 +1,63 @@
+CREATE DATABASE IF NOT EXISTS Bank;
+USE Bank;
+
+
+DROP TABLE IF EXISTS Account_Log;
+DROP TABLE IF EXISTS Account;
+CREATE TABLE Account (
+    Account_ID    INT PRIMARY KEY,
+    Account_Name  VARCHAR(50),
+    Balance       DECIMAL(10,2)
+);
+
+CREATE TABLE Account_Log (
+    Log_ID       INT AUTO_INCREMENT PRIMARY KEY,
+    Account_ID   INT,
+    Action       VARCHAR(20),
+    Old_Balance  DECIMAL(10,2),
+    New_Balance  DECIMAL(10,2),
+    Action_Time  DATETIME
+);
+
+
+-- Create the AFTER INSERT trigger--
+DELIMITER //
+CREATE TRIGGER trg_after_insert
+AFTER INSERT ON Account
+FOR EACH ROW
+BEGIN
+    INSERT INTO Account_Log (Account_ID, Action, Old_Balance, New_Balance, Action_Time)
+    VALUES (NEW.Account_ID, 'INSERT', NULL, NEW.Balance, NOW());
+END //
+DELIMITER ;
+
+
+-- Create the AFTER UPDATE trigger--
+DELIMITER //
+CREATE TRIGGER trg_after_update
+AFTER UPDATE ON Account
+FOR EACH ROW
+BEGIN
+    INSERT INTO Account_Log (Account_ID, Action, Old_Balance, New_Balance, Action_Time)
+    VALUES (OLD.Account_ID, 'UPDATE', OLD.Balance, NEW.Balance, NOW());
+END //
+DELIMITER ;
+
+
+
+-- Insert accounts (INSERT trigger fires)--
+INSERT INTO Account VALUES
+(1, 'Ramesh Patil', 5000.00),
+(2, 'Sita Sharma', 10000.00),
+(3, 'Anil Kumar', 7500.00);
+
+
+-- Update balances (UPDATE trigger fires)--
+UPDATE Account SET Balance = 6000  WHERE Account_ID = 1;
+UPDATE Account SET Balance = 12000 WHERE Account_ID = 2;
+
+
+SELECT * FROM Account;
+
+
+SELECT * FROM Account_Log;
