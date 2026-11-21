@@ -1,0 +1,67 @@
+CREATE DATABASE Bank;
+USE Bank;
+
+
+CREATE TABLE Account (
+    Account_No    INT PRIMARY KEY,
+    Account_Name  VARCHAR(50),
+    Balance       DECIMAL(10,2)
+);
+
+INSERT INTO Account VALUES
+(1001, 'Ramesh Patil', 5000.00),
+(1002, 'Sita Sharma', 10000.00),
+(1003, 'Anil Kumar', 7500.00);
+
+
+SELECT * FROM Account;
+
+
+CREATE PROCEDURE withdraw_money(IN p_acc_no INT, IN p_amount DECIMAL(10,2))
+BEGIN
+    DECLARE v_count    INT;
+    DECLARE v_balance  DECIMAL(10,2);
+    DECLARE v_msg      VARCHAR(255);
+
+    
+    -- Exception handler: catches errors and shows the message
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        GET DIAGNOSTICS CONDITION 1 v_msg = MESSAGE_TEXT;
+        SELECT v_msg AS Error_Message;
+    END;
+
+    
+    -- Check 1: does the account exist?
+    SELECT COUNT(*) INTO v_count FROM Account WHERE Account_No = p_acc_no;
+    IF v_count = 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error: Account does not exist';
+    END IF;
+
+    
+    -- Check 2: is the balance enough?
+    SELECT Balance INTO v_balance FROM Account WHERE Account_No = p_acc_no;
+    IF p_amount > v_balance THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error: Insufficient balance';
+    ELSE
+        UPDATE Account SET Balance = Balance - p_amount WHERE Account_No = p_acc_no;
+        SELECT 'Withdrawal successful' AS Message;
+    END IF;
+END //
+DELIMITER ;
+
+
+
+
+CALL withdraw_money(1001, 2000);
+
+
+
+CALL withdraw_money(9999, 500);
+
+
+
+SELECT * FROM Account;
+
+
+
